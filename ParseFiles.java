@@ -1,13 +1,21 @@
 import org.eclipse.jdt.core.dom.*;
 
-public class parseFiles {
-	
-	int classCounter;
-	
+public class ParseFiles {
+
+	private static int classCounter;
+
 	/**
-	 * Builds a parser
+	 * Resets the counter back to 0 for any future directories.
+	 */
+	public static void reset() {
+		classCounter = 0;
+	}
+
+	/**
+	 * Builds an ASTParser from the given source.
 	 * 
-	 * @param directory Character Array that is set to be parsed
+	 * @param directory
+	 *            Character Array that is set to be parsed
 	 * @return parser Returns a parser ready to be used
 	 */
 	public static ASTParser buildParser(char[] directory) {
@@ -17,25 +25,26 @@ public class parseFiles {
 		parser.setResolveBindings(true);
 		return parser;
 	}
-	
+
 	/**
+	 * Crawls through an AST created by a given ASTParser, returning an int count
+	 * equal to the number of Type declarations it encounters.
 	 * 
-	 * @param parser Passes a parser to begin creating an AST
+	 * @param parser
+	 *            Passes a parser to begin creating an AST
 	 * @return int Count of how many times a node of TypeDeclaration was found
 	 */
-	public int classDeclarationCounter(ASTParser parser) {
+	public static int classDeclarationCounter(ASTParser parser) {
 		final CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-		
+
 		compilationUnit.accept(new ASTVisitor() {
-			
+
 			public boolean visit(TypeDeclaration node) {
 				classCounter++;
 				return true;
 			}
 		});
-		
+
 		return classCounter;
-	
 	}
 }
-	

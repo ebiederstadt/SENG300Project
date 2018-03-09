@@ -6,9 +6,6 @@ import org.junit.Test;
 
 /**
  * JUnit testing class for testing the various aspects of the JavaAST class.
- * 
- * @author Wesley
- *
  */
 public class JavaASTTest {
 
