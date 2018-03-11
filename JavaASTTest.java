@@ -22,7 +22,7 @@ public class JavaASTTest {
 				+ "}\n";
 	}
 
-	// Checks to see if fileConverter correctly identifies an nonexistant, invalid
+	// Checks to see if fileConverter correctly identifies an nonexistent, invalid
 	// directory
 	@Test(expected = NullPointerException.class)
 	public void testFileConverterInvalidGivenDirectory() {
@@ -46,7 +46,11 @@ public class JavaASTTest {
 	}
 	}
 	
-	
+	// Tests that the correct number of class declarations are found by fileParser
+	@Test
+	public void testFileParserClassDeclarations() {
+		assertEquals("Class declarations found: 1", JavaAST.fileParser(fileContents));
+	}
 	
 
 }

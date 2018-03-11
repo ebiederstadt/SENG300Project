@@ -2,6 +2,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
+
+import javax.lang.model.SourceVersion;
+
 import java.io.File;
 
 import org.eclipse.jdt.core.dom.*;
@@ -44,6 +47,21 @@ public class JavaAST {
 		}
 		return fileContents.toString();
 	}
+	
+	/**
+	 * Given a String that represents the contents of a java file,
+	 * parser the string to a char array and use ASTParser to count 
+	 * the number of class declarations 
+	 */
+	public static String fileParser(String parsedString) {
+		// Prepare and use the ParseFiles class to parse the code from the given directory
+		char[] astSource = parsedString.toCharArray();
+		ParseFiles.reset();
+		ASTParser parser = ParseFiles.buildParser(astSource);
+		int classCount = ParseFiles.classDeclarationCounter(parser);
+		
+		return("Class declarations found: " + classCount);
+	}
 
 	/**
 	 * Mains method, takes in user input for directory
@@ -54,6 +72,7 @@ public class JavaAST {
 	public static void main(String[] args) throws IOException {
 		Scanner keyboard = new Scanner(System.in);
 		String inputDir;
+		String javaType;
 		String stringParse;
 
 		// Prompts for user input on directory, checks if directory is valid
@@ -72,13 +91,20 @@ public class JavaAST {
 
 		}
 		
-		// Prepare and use the ParseFiles class to parse the code from the given directory
-		char[] astSource = stringParse.toCharArray();
-		ParseFiles.reset();
-		ASTParser parser = ParseFiles.buildParser(astSource);
-		int classCount = ParseFiles.classDeclarationCounter(parser);
+		// Prompts the user for input for qualified java type, checks if type is valid
+		System.out.print("Enter qualified Java type: ");
+		while (true) {
+			javaType = keyboard.next();
+			if (SourceVersion.isName(javaType)) {
+				break;
+			}
+			else {
+				System.out.println("That is not a valid type name\n");
+				continue;
+			}
+		}
 		
-		System.out.println("Class declarations found: " + classCount);
+		System.out.println(fileParser(stringParse));
 		
 		keyboard.close();
 	}
