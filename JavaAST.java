@@ -12,6 +12,7 @@ import org.eclipse.jdt.core.dom.*;
 public class JavaAST {
 	// Base directory from which the given directory is relative to
 	private static final String BASEDIR = "";
+	private static String javaType;
 
 	/**
 	 * Searches for all .java files in a directory and converts them to a single
@@ -58,6 +59,28 @@ public class JavaAST {
 		char[] astSource = parsedString.toCharArray();
 		return astSource;
 	}
+	
+	/**
+	 * Prompts user for input on what Java type they would like to check
+	 * 
+	 * @return A String based on specific desired Java Type
+	 */
+	public static String inputType() {
+	// Prompts the user for input for qualified java type, checks if type is valid
+			Scanner keyboard = new Scanner(System.in);
+			System.out.print("Enter qualified Java type: ");
+			while (true) {
+				javaType = keyboard.next();
+				if (SourceVersion.isName(javaType)) {
+					return javaType;
+				}
+				else {
+					System.out.println("That is not a valid type name\n");
+					continue;
+				}
+				
+			}
+		}
 
 	/**
 	 * Mains method, takes in user input for directory
@@ -68,7 +91,6 @@ public class JavaAST {
 	public static void main(String[] args) throws IOException {
 		Scanner keyboard = new Scanner(System.in);
 		String inputDir;
-		String javaType;
 		String stringParse;
 		ASTParser parser;
 		int declerationCounter = 0;
@@ -90,21 +112,10 @@ public class JavaAST {
 
 		}
 		
-		// Prompts the user for input for qualified java type, checks if type is valid
-		System.out.print("Enter qualified Java type: ");
-		while (true) {
-			javaType = keyboard.next();
-			if (SourceVersion.isName(javaType)) {
-				break;
-			}
-			else {
-				System.out.println("That is not a valid type name\n");
-				continue;
-			}
-		}
 		// Create an ASTParser and count the number of decelerations and references
 		parser = ParseFiles.buildParser(fileParser(stringParse));
 		declerationCounter = ParseFiles.classDeclarationCounter(parser);
+		javaType = JavaAST.inputType();
 		
 		// Print the results
 		System.out.println(javaType + " " + declerationCounter);
