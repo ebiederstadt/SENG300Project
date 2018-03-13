@@ -92,7 +92,7 @@ public class JavaAST {
 		Scanner keyboard = new Scanner(System.in);
 		String inputDir;
 		String stringParse;
-		ASTParser parser;
+		CompilationUnit parser;
 		int declerationCounter = 0;
 		int referenceCounter = 0;
 
@@ -113,9 +113,10 @@ public class JavaAST {
 		}
 		
 		// Create an ASTParser and count the number of decelerations and references
-		parser = ParseFiles.buildParser(fileParser(stringParse));
-		declerationCounter = ParseFiles.classDeclarationCounter(parser);
 		javaType = JavaAST.inputType();
+		parser = ParseFiles.buildParser(fileParser(stringParse));
+		declerationCounter = ParseFiles.declarationCounter(parser, stringParse);
+		referenceCounter = ParseFiles.referenceCounter(parser, stringParse);
 		
 		// Print the results
 		System.out.println(javaType + " " + declerationCounter);

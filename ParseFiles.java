@@ -2,13 +2,15 @@ import org.eclipse.jdt.core.dom.*;
 
 public class ParseFiles {
 
-	private static int classCounter;
+	private static int declerationCounter;
+	private static int referenceCounter;
 
 	/**
 	 * Resets the counter back to 0 for any future directories.
 	 */
 	public static void reset() {
-		classCounter = 0;
+		declerationCounter  = 0;
+		referenceCounter = 0;
 	}
 
 	/**
@@ -18,12 +20,13 @@ public class ParseFiles {
 	 *            Character Array that is set to be parsed
 	 * @return parser Returns a parser ready to be used
 	 */
-	public static ASTParser buildParser(char[] source) {
+	public static CompilationUnit buildParser(char[] source) {
 		ASTParser parser = ASTParser.newParser(AST.JLS8);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(source);
 		parser.setResolveBindings(true);
-		return parser;
+		final CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
+		return compilationUnit;
 	}
 
 	/**
@@ -31,20 +34,52 @@ public class ParseFiles {
 	 * equal to the number of Type declarations it encounters.
 	 * 
 	 * @param parser
-	 *            Passes a parser to begin creating an AST
-	 * @return int Count of how many times a node of TypeDeclaration was found
+	 *            Passes a CompilationUnit which is used to move through the rest of the AST
+	 *            
+	 * @param javaType
+	 * 			A fully qualified java type
+	 *            
+	 * @return integer Count of how many times a node of type javaType was found
 	 */
-	public static int classDeclarationCounter(ASTParser parser) {
-		final CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
+	public static int declarationCounter(CompilationUnit parser, String javaType) {
 
-		compilationUnit.accept(new ASTVisitor() {
+		parser.accept(new ASTVisitor() {
 
 			public boolean visit(TypeDeclaration node) {
-				classCounter++;
+				System.out.println(node);
+				/*ITypeBinding binding = node.resolveBinding();
+				if (binding.getQualifiedName() != null && binding.getQualifiedName()==javaType) {
+					declerationCounter++;
+				}*/
 				return true;
 			}
 		});
 
-		return classCounter;
+		return declerationCounter;
+	}
+	
+	/**
+	 * Moves through a AST created by an ASTParser, return an integer count
+	 * equal to the number of references it encounters
+	 * 
+	 * @param parser
+	 * 			Passes a CompilationUnit which is used to move through the rest of the AST
+	 * 
+	 * @param javaType
+	 * 			A fully qualified java type
+	 * 
+	 * @return integer count of how many times a the java type was referenced
+	 */
+	public static int referenceCounter(CompilationUnit parser, String javaType) {
+		
+		parser.accept(new ASTVisitor() {
+			
+			public boolean visit(TypeDeclaration node) {
+				
+				return true;
+			}
+		});
+		
+		return referenceCounter;
 	}
 }
