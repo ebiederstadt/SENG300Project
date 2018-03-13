@@ -18,10 +18,10 @@ public class ParseFiles {
 	 *            Character Array that is set to be parsed
 	 * @return parser Returns a parser ready to be used
 	 */
-	public static ASTParser buildParser(char[] directory) {
+	public static ASTParser buildParser(char[] source) {
 		ASTParser parser = ASTParser.newParser(AST.JLS8);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		parser.setSource(directory);
+		parser.setSource(source);
 		parser.setResolveBindings(true);
 		return parser;
 	}

@@ -49,18 +49,14 @@ public class JavaAST {
 	}
 	
 	/**
-	 * Given a String that represents the contents of a java file,
-	 * parser the string to a char array and use ASTParser to count 
-	 * the number of class declarations 
+	 * @param A string representation of a program
+	 * 
+	 * @return A character array representation of a program
 	 */
-	public static String fileParser(String parsedString) {
+	public static char[] fileParser(String parsedString) {
 		// Prepare and use the ParseFiles class to parse the code from the given directory
 		char[] astSource = parsedString.toCharArray();
-		ParseFiles.reset();
-		ASTParser parser = ParseFiles.buildParser(astSource);
-		int classCount = ParseFiles.classDeclarationCounter(parser);
-		
-		return("Class declarations found: " + classCount);
+		return astSource;
 	}
 
 	/**
@@ -74,6 +70,9 @@ public class JavaAST {
 		String inputDir;
 		String javaType;
 		String stringParse;
+		ASTParser parser;
+		int declerationCounter = 0;
+		int referenceCounter = 0;
 
 		// Prompts for user input on directory, checks if directory is valid
 		while (true) {
@@ -103,8 +102,13 @@ public class JavaAST {
 				continue;
 			}
 		}
+		// Create an ASTParser and count the number of decelerations and references
+		parser = ParseFiles.buildParser(fileParser(stringParse));
+		declerationCounter = ParseFiles.classDeclarationCounter(parser);
 		
-		System.out.println(fileParser(stringParse));
+		// Print the results
+		System.out.println(javaType + " " + declerationCounter);
+		System.out.println(javaType + " " + referenceCounter);
 		
 		keyboard.close();
 	}
