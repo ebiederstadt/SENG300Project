@@ -42,27 +42,4 @@ public class JavaAST {
 	}
 
 	
-	/**
-	 * Prompts user for input on what Java type they would like to check
-	 * 
-	 * @return A String based on specific desired Java Type
-	 */
-	public static String inputType() {
-		// Prompts the user for input for qualified java type, checks if type is valid
-		Scanner keyboard = new Scanner(System.in);
-		System.out.print("Enter qualified Java type: ");
-		while (true) {
-			javaType = keyboard.next();
-			if (SourceVersion.isName(javaType)) {
-				keyboard.close();
-				return javaType;	
-			}
-			else {
-				System.out.println("That is not a valid type name\n");
-				continue;
-				}
-			}
-		}
-
-	
 }

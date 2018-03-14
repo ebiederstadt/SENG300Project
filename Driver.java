@@ -3,6 +3,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
+import javax.lang.model.SourceVersion;
+
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
@@ -18,32 +20,27 @@ public class Driver {
 	 */
 	public static void main(String[] args) throws IOException, FileNotFoundException {
 		
+		String inputDir = args[0];
+		javaType = args[1];
+		if (inputDir.equals(null)) {
+			System.err.println("Directory does not exist");
+			System.exit(0);
+		}
+		if (! SourceVersion.isName(javaType)) {
+			System.err.println("Not a java type!");
+			System.exit(0);
+		}
+		
 		Scanner keyboard = new Scanner(System.in);
-		String inputDir;
 		String stringParse;
 		int declerationCounter = 0;
 		int referenceCounter = 0;
 		
-		JavaAST javaAST = new JavaAST();
-		ParseFiles parseFiles = new ParseFiles();
-		
-		// Prompts for user input on directory, checks if directory is valid
-		while (true) {
-			try {
-				System.out.print("Enter Directory: ");
-				inputDir = keyboard.next();
-				break;
-			}
-
-			catch (NullPointerException e) {
-				System.err.print("Error: Directory does not exist\n");
-				continue;
-			}
-
-		}
-		
 		File directory = new File(inputDir);
 		File[] fileList = directory.listFiles();
+		
+		ParseFiles parseFiles = new ParseFiles(javaType);
+		
 		
 		for (File current:fileList) {
 			char[] source = JavaAST.fileConverter(current);
@@ -54,9 +51,8 @@ public class Driver {
 		}
 		
 		// Create an ASTParser and count the number of decelerations and references
-		javaType = JavaAST.inputType();
 		declerationCounter = ParseFiles.getDeclerationCounter();
-		//referenceCounter = ParseFiles.referenceCounter(parser, stringParse);
+		referenceCounter = ParseFiles.getReferenceCounter();
 		
 		// Print the results
 		System.out.println(javaType + " Declarations found: " + declerationCounter +

@@ -3,21 +3,15 @@ import org.eclipse.jdt.core.dom.*;
 
 import java.util.Map;
 
-import javax.lang.model.type.*;
-
 public class ParseFiles extends ASTVisitor {
 
 	private static String javaType;
-	private static int declerationCounter;
-	private static int referenceCounter;
+	private static int declerationCounter = 0;
+	private static int referenceCounter = 0;
 	private ASTNode rootNode;
-
-	/**
-	 * Resets the counter back to 0 for any future directories.
-	 */
-	public static void reset() {
-		declerationCounter  = 0;
-		referenceCounter = 0;
+	
+	public ParseFiles(String javaType) {
+		this.javaType = javaType;
 	}
 	
 	public void setDeclerationCounter(int declerationCounter) {
@@ -36,6 +30,14 @@ public class ParseFiles extends ASTVisitor {
 		return ParseFiles.javaType;
 	}
 	
+	public static int getReferenceCounter() {
+		return referenceCounter;
+	}
+
+	public static void setReferenceCounter(int referenceCounter) {
+		ParseFiles.referenceCounter = referenceCounter;
+	}
+
 	public void setRoot(ASTNode rootNode) {
 		this.rootNode = rootNode;
 	}
@@ -74,7 +76,7 @@ public class ParseFiles extends ASTVisitor {
 
 	public boolean visit(EnumDeclaration node) throws NullPointerException {
 		String strBinding = node.resolveBinding().getQualifiedName();
-		if (strBinding.equals(javaType)) {
+		if (strBinding.equals(ParseFiles.javaType)) {
 			ParseFiles.declerationCounter++;
 		}
 		return true;
@@ -82,7 +84,7 @@ public class ParseFiles extends ASTVisitor {
 	
 	public boolean visit(TypeDeclaration node) throws NullPointerException {
 		String strBinding = node.resolveBinding().getQualifiedName();
-		if (strBinding.equals(javaType)) {
+		if (strBinding.equals(ParseFiles.javaType)) {
 			ParseFiles.declerationCounter++;
 		}
 		return true;
@@ -90,11 +92,34 @@ public class ParseFiles extends ASTVisitor {
 	
 	public boolean visit(AnnotationTypeDeclaration node) throws NullPointerException {
 		String strBinding = node.resolveBinding().getQualifiedName();
-		if (strBinding.equals(javaType)) {
+		if (strBinding.equals(ParseFiles.javaType)) {
 			ParseFiles.declerationCounter++;
 		}
 		return true;
 	}
 	
+	public boolean visit(FieldDeclaration node) throws NullPointerException {
+		String strBinding = node.getType().resolveBinding().getQualifiedName();
+		if (strBinding.equals(ParseFiles.javaType)) {
+			ParseFiles.referenceCounter++;
+		}
+		return true;
+	}
+	
+	public boolean visit(VariableDeclarationStatement node) throws NullPointerException {
+		String strBinding = node.getType().resolveBinding().getQualifiedName();
+		if (strBinding.equals(ParseFiles.javaType)) {
+			ParseFiles.referenceCounter++;
+		}
+		return true;
+	}
+	
+	public boolean visit(ClassInstanceCreation node) throws NullPointerException {
+		String strBinding = node.getType().resolveBinding().getQualifiedName();
+		if (strBinding.equals(ParseFiles.javaType)) {
+			ParseFiles.referenceCounter++;
+		}
+		return true;
+	}
 	
 }
