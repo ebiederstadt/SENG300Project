@@ -1,9 +1,16 @@
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.*;
 
-public class ParseFiles {
+import java.util.Map;
 
+import javax.lang.model.type.*;
+
+public class ParseFiles extends ASTVisitor {
+
+	private static String javaType;
 	private static int declerationCounter;
 	private static int referenceCounter;
+	private ASTNode rootNode;
 
 	/**
 	 * Resets the counter back to 0 for any future directories.
@@ -11,6 +18,30 @@ public class ParseFiles {
 	public static void reset() {
 		declerationCounter  = 0;
 		referenceCounter = 0;
+	}
+	
+	public void setDeclerationCounter(int declerationCounter) {
+		ParseFiles.declerationCounter = declerationCounter;
+	}
+	
+	public static int getDeclerationCounter() {
+		return declerationCounter;
+	}
+
+	public void setJavatype(String javaType) {
+		ParseFiles.javaType = javaType;
+	}
+	
+	public String getJavaType() {
+		return ParseFiles.javaType;
+	}
+	
+	public void setRoot(ASTNode rootNode) {
+		this.rootNode = rootNode;
+	}
+	
+	public ASTNode getRootNode() {
+		return this.rootNode;
 	}
 
 	/**
@@ -20,66 +51,50 @@ public class ParseFiles {
 	 *            Character Array that is set to be parsed
 	 * @return parser Returns a parser ready to be used
 	 */
-	public static CompilationUnit buildParser(char[] source) {
+	public static ASTParser buildParser(char[] source, String fileName, String inputDir) {
 		ASTParser parser = ASTParser.newParser(AST.JLS8);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		parser.setSource(source);
+		
+		parser.setUnitName(fileName);
+		
+		Map map = JavaCore.getOptions();
+		JavaCore.setComplianceOptions(JavaCore.VERSION_1_8, map);
+		parser.setCompilerOptions(map);
+		
+		String[] classPath = new String[] {inputDir};
+		parser.setEnvironment(classPath, classPath, new String[] {"UTF-8"}, true);
+ 		
 		parser.setResolveBindings(true);
-		final CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-		return compilationUnit;
+		parser.setBindingsRecovery(true);
+		
+		parser.setSource(source);
+		
+		return parser;
 	}
 
-	/**
-	 * Crawls through an AST created by a given ASTParser, returning an int count
-	 * equal to the number of Type declarations it encounters.
-	 * 
-	 * @param parser
-	 *            Passes a CompilationUnit which is used to move through the rest of the AST
-	 *            
-	 * @param javaType
-	 * 			A fully qualified java type
-	 *            
-	 * @return integer Count of how many times a node of type javaType was found
-	 */
-	public static int declarationCounter(CompilationUnit parser, String javaType) {
-
-		parser.accept(new ASTVisitor() {
-
-			public boolean visit(TypeDeclaration node) {
-				System.out.println(node);
-				/*ITypeBinding binding = node.resolveBinding();
-				if (binding.getQualifiedName() != null && binding.getQualifiedName()==javaType) {
-					declerationCounter++;
-				}*/
-				return true;
-			}
-		});
-
-		return declerationCounter;
+	public boolean visit(EnumDeclaration node) throws NullPointerException {
+		String strBinding = node.resolveBinding().getQualifiedName();
+		if (strBinding.equals(javaType)) {
+			ParseFiles.declerationCounter++;
+		}
+		return true;
 	}
 	
-	/**
-	 * Moves through a AST created by an ASTParser, return an integer count
-	 * equal to the number of references it encounters
-	 * 
-	 * @param parser
-	 * 			Passes a CompilationUnit which is used to move through the rest of the AST
-	 * 
-	 * @param javaType
-	 * 			A fully qualified java type
-	 * 
-	 * @return integer count of how many times a the java type was referenced
-	 */
-	public static int referenceCounter(CompilationUnit parser, String javaType) {
-		
-		parser.accept(new ASTVisitor() {
-			
-			public boolean visit(TypeDeclaration node) {
-				
-				return true;
-			}
-		});
-		
-		return referenceCounter;
+	public boolean visit(TypeDeclaration node) throws NullPointerException {
+		String strBinding = node.resolveBinding().getQualifiedName();
+		if (strBinding.equals(javaType)) {
+			ParseFiles.declerationCounter++;
+		}
+		return true;
 	}
+	
+	public boolean visit(AnnotationTypeDeclaration node) throws NullPointerException {
+		String strBinding = node.resolveBinding().getQualifiedName();
+		if (strBinding.equals(javaType)) {
+			ParseFiles.declerationCounter++;
+		}
+		return true;
+	}
+	
+	
 }

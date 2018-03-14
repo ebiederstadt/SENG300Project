@@ -7,12 +7,8 @@ import javax.lang.model.SourceVersion;
 
 import java.io.File;
 
-import org.eclipse.jdt.core.dom.*;
-
 public class JavaAST {
-	// Base directory from which the given directory is relative to
-	private static final String BASEDIR = "";
-	private static String javaType;
+	public static String javaType;
 
 	/**
 	 * Searches for all .java files in a directory and converts them to a single
@@ -24,41 +20,27 @@ public class JavaAST {
 	 * @throws IOException
 	 *             Thrown when I/O fails or is not interpreted
 	 */
-	public static String fileConverter(String directory) throws IOException {
-		// Directory to parse
-		File dirFile = new File(BASEDIR + directory);
+	public static char[] fileConverter(File file) throws IOException {
 		// For containing all the javacode
 		StringBuilder fileContents = new StringBuilder();
-		File[] fileList = dirFile.listFiles();
 		BufferedReader bufferedReader;
 
 		// Searches given directory for .java files
-		for (File file : fileList) {
-			if (file.isFile() && file.getName().endsWith(".java")) {
-				bufferedReader = new BufferedReader(new FileReader(file));
-				String line = null;
+		if (file.isFile() && file.getName().endsWith(".java")) {
+			bufferedReader = new BufferedReader(new FileReader(file));
+			String line = null;
 
-				// Append each line of java source code onto the string
-				while ((line = bufferedReader.readLine()) != null) {
-					fileContents.append(line).append("\n");
-				}
-
-				bufferedReader.close();
+			// Append each line of java source code onto the string
+			while ((line = bufferedReader.readLine()) != null) {
+				fileContents.append(line).append("\n");
 			}
+
+			bufferedReader.close();
 		}
-		return fileContents.toString();
+		String source = fileContents.toString();
+		return source.toCharArray();
 	}
-	
-	/**
-	 * @param A string representation of a program
-	 * 
-	 * @return A character array representation of a program
-	 */
-	public static char[] fileParser(String parsedString) {
-		// Prepare and use the ParseFiles class to parse the code from the given directory
-		char[] astSource = parsedString.toCharArray();
-		return astSource;
-	}
+
 	
 	/**
 	 * Prompts user for input on what Java type they would like to check
@@ -66,62 +48,21 @@ public class JavaAST {
 	 * @return A String based on specific desired Java Type
 	 */
 	public static String inputType() {
-	// Prompts the user for input for qualified java type, checks if type is valid
-			Scanner keyboard = new Scanner(System.in);
-			System.out.print("Enter qualified Java type: ");
-			while (true) {
-				javaType = keyboard.next();
-				if (SourceVersion.isName(javaType)) {
-					return javaType;
-				}
-				else {
-					System.out.println("That is not a valid type name\n");
-					continue;
-				}
-				
-			}
-		}
-
-	/**
-	 * Mains method, takes in user input for directory
-	 * 
-	 * @throws IOException
-	 *             Thrown when I/O fails or is not interpreted
-	 */
-	public static void main(String[] args) throws IOException {
+		// Prompts the user for input for qualified java type, checks if type is valid
 		Scanner keyboard = new Scanner(System.in);
-		String inputDir;
-		String stringParse;
-		CompilationUnit parser;
-		int declerationCounter = 0;
-		int referenceCounter = 0;
-
-		// Prompts for user input on directory, checks if directory is valid
+		System.out.print("Enter qualified Java type: ");
 		while (true) {
-			try {
-				System.out.print("Enter Directory: ");
-				inputDir = keyboard.next();
-				stringParse = JavaAST.fileConverter(inputDir);
-				break;
+			javaType = keyboard.next();
+			if (SourceVersion.isName(javaType)) {
+				keyboard.close();
+				return javaType;	
 			}
-
-			catch (NullPointerException e) {
-				System.err.print("Error: Directory does not exist\n");
+			else {
+				System.out.println("That is not a valid type name\n");
 				continue;
+				}
 			}
-
 		}
-		
-		// Create an ASTParser and count the number of decelerations and references
-		javaType = JavaAST.inputType();
-		parser = ParseFiles.buildParser(fileParser(stringParse));
-		declerationCounter = ParseFiles.declarationCounter(parser, stringParse);
-		referenceCounter = ParseFiles.referenceCounter(parser, stringParse);
-		
-		// Print the results
-		System.out.println(javaType + " " + declerationCounter);
-		System.out.println(javaType + " " + referenceCounter);
-		
-		keyboard.close();
-	}
+
+	
 }
