@@ -7,15 +7,14 @@ import javax.lang.model.SourceVersion;
 
 import java.io.File;
 
-public class JavaAST {
-	public static String javaType;
+public class FileConverter {
 
 	/**
 	 * Searches for all .java files in a directory and converts them to a single
 	 * string
 	 * 
-	 * @param directory
-	 *            Passes directory to be sorted through
+	 * @param file
+	 *            File that will be converted to a character array
 	 * @return String Returns string consisting of all .java files
 	 * @throws IOException
 	 *             Thrown when I/O fails or is not interpreted

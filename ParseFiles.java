@@ -11,7 +11,7 @@ public class ParseFiles extends ASTVisitor {
 	private ASTNode rootNode;
 	
 	public ParseFiles(String javaType) {
-		this.javaType = javaType;
+		ParseFiles.javaType = javaType;
 	}
 	
 	public void setDeclerationCounter(int declerationCounter) {
@@ -50,7 +50,12 @@ public class ParseFiles extends ASTVisitor {
 	 * Builds an ASTParser from the given source.
 	 * 
 	 * @param directory
-	 *            Character Array that is set to be parsed
+	 *          Character Array that is set to be parsed
+	 * @param fileName
+	 * 			String representation of the file name
+	 * @param inputDir
+	 * 			String representation of the input directory
+	 * 
 	 * @return parser Returns a parser ready to be used
 	 */
 	public static ASTParser buildParser(char[] source, String fileName, String inputDir) {
@@ -73,7 +78,12 @@ public class ParseFiles extends ASTVisitor {
 		
 		return parser;
 	}
-
+	/**
+	 * Visit a node in the AST of type EnumDeclaration
+	 * @param node
+	 * 		node in the AST
+	 * @return true to end the visit
+	 */
 	public boolean visit(EnumDeclaration node) throws NullPointerException {
 		String strBinding = node.resolveBinding().getQualifiedName();
 		if (strBinding.equals(ParseFiles.javaType)) {
@@ -82,6 +92,12 @@ public class ParseFiles extends ASTVisitor {
 		return true;
 	}
 	
+	/**
+	 * Visit a node in the AST of type TypeDeclaration
+	 * @param node
+	 * 		node in the AST
+	 * @return true to end the visit
+	 */
 	public boolean visit(TypeDeclaration node) throws NullPointerException {
 		String strBinding = node.resolveBinding().getQualifiedName();
 		if (strBinding.equals(ParseFiles.javaType)) {
@@ -90,6 +106,12 @@ public class ParseFiles extends ASTVisitor {
 		return true;
 	}
 	
+	/**
+	 * Visit a node in the AST of type AnnotationtypeDeclaration
+	 * @param node
+	 * 		node in the AST
+	 * @return true to end the visit
+	 */
 	public boolean visit(AnnotationTypeDeclaration node) throws NullPointerException {
 		String strBinding = node.resolveBinding().getQualifiedName();
 		if (strBinding.equals(ParseFiles.javaType)) {
@@ -98,6 +120,12 @@ public class ParseFiles extends ASTVisitor {
 		return true;
 	}
 	
+	/**
+	 * Visit a node in the AST of type FieldDeclaration
+	 * @param node
+	 * 		node in the AST
+	 * @return true to end the visit
+	 */
 	public boolean visit(FieldDeclaration node) throws NullPointerException {
 		String strBinding = node.getType().resolveBinding().getQualifiedName();
 		if (strBinding.equals(ParseFiles.javaType)) {
@@ -106,6 +134,12 @@ public class ParseFiles extends ASTVisitor {
 		return true;
 	}
 	
+	/**
+	 * Visit a node in the AST of type VariableDeclarationStatement
+	 * @param node
+	 * 		node in the AST
+	 * @return true to end the visit
+	 */
 	public boolean visit(VariableDeclarationStatement node) throws NullPointerException {
 		String strBinding = node.getType().resolveBinding().getQualifiedName();
 		if (strBinding.equals(ParseFiles.javaType)) {
@@ -114,6 +148,12 @@ public class ParseFiles extends ASTVisitor {
 		return true;
 	}
 	
+	/**
+	 * Visit a node in the AST of type ClassInstanceCreation
+	 * @param node
+	 * 		node in the AST
+	 * @return true to end the visit
+	 */
 	public boolean visit(ClassInstanceCreation node) throws NullPointerException {
 		String strBinding = node.getType().resolveBinding().getQualifiedName();
 		if (strBinding.equals(ParseFiles.javaType)) {
