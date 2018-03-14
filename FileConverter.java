@@ -1,21 +1,17 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
-
-import javax.lang.model.SourceVersion;
-
 import java.io.File;
 
 public class FileConverter {
 
 	/**
-	 * Searches for all .java files in a directory and converts them to a single
-	 * string
+	 * Converts a given file's contents into a String, if it is a .java file.
 	 * 
 	 * @param file
 	 *            File that will be converted to a character array
-	 * @return String Returns string consisting of all .java files
+	 * @return char[] Returns a character array consisting of all the content within
+	 *         a given .java file
 	 * @throws IOException
 	 *             Thrown when I/O fails or is not interpreted
 	 */
@@ -24,7 +20,7 @@ public class FileConverter {
 		StringBuilder fileContents = new StringBuilder();
 		BufferedReader bufferedReader;
 
-		// Searches given directory for .java files
+		// Checks to see if a valid .java file is given before converting
 		if (file.isFile() && file.getName().endsWith(".java")) {
 			bufferedReader = new BufferedReader(new FileReader(file));
 			String line = null;
@@ -40,5 +36,4 @@ public class FileConverter {
 		return source.toCharArray();
 	}
 
-	
 }

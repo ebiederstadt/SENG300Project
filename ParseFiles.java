@@ -3,6 +3,10 @@ import org.eclipse.jdt.core.dom.*;
 
 import java.util.Map;
 
+/**
+ * Modified ASTVisitor which determines a count of declarations and references from an AST.
+ *
+ */
 public class ParseFiles extends ASTVisitor {
 
 	private static String javaType;
@@ -10,11 +14,16 @@ public class ParseFiles extends ASTVisitor {
 	private static int referenceCounter = 0;
 	private ASTNode rootNode;
 	
+	/**
+	 * Creates a new ParseFiles class.
+	 * 
+	 * @param javaType The name of the java type to search for declarations and references for.
+	 */
 	public ParseFiles(String javaType) {
 		ParseFiles.javaType = javaType;
 	}
 	
-	public void setDeclerationCounter(int declerationCounter) {
+	public static void setDeclerationCounter(int declerationCounter) {
 		ParseFiles.declerationCounter = declerationCounter;
 	}
 	

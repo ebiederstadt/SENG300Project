@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
 
 import javax.lang.model.SourceVersion;
 
@@ -17,12 +16,15 @@ public class Driver {
 	/**
 	 * Mains method, takes in user input for directory
 	 * 
+	 * @param args args[0] being input directory and args[1] being java type 
+	 * 
 	 * @throws IOException
 	 *             Thrown when I/O fails or is not interpreted
 	 * @throws FileNotFoundException
 	 * 				Thrown when no file is found in the directory
 	 */
 	public static void main(String[] args) throws IOException, FileNotFoundException {
+		// Error check the user input for the input directory and java type
 		String inputDir = args[0];
 		if (inputDir.equals(null)) {
 			System.err.println("Directory does not exist");
