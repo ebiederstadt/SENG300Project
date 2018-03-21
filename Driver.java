@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.List;
 
 import javax.lang.model.SourceVersion;
 
@@ -39,17 +40,21 @@ public class Driver {
 		File[] fileList = directory.listFiles();
 		Set<String> allNodes = GetNodeUtil.nodesToStringArray(fileList);
 		$.log(allNodes);
+		directorySearcher recursiveSearch = new directorySearcher();
+		List<File> fileList1 = recursiveSearch.searchSubdirectories(inputDir);
+		ParseFiles parseFiles = new ParseFiles(inputType);
+		$.log(fileList1.toString(), true);
 		
 		for(String node: allNodes){
-			ParseFiles parseFiles = new ParseFiles(node);
+			ParseFiles parseFiles1 = new ParseFiles(node);
 			
 			// For every file in the directory use a AST visitor to count the number of decelerations and references 
-			for (File current:fileList) {
+			for (File current:fileList1) {
 				char[] source = FileConverter.fileConverter(current);
 				ASTParser parser = ParseFiles.buildParser(source, current.getName(), inputDir);
 				CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-				parseFiles.setRoot(compilationUnit);
-				compilationUnit.accept(parseFiles);
+				parseFiles1.setRoot(compilationUnit);
+				compilationUnit.accept(parseFiles1);
 			}
 			
 			declerationCounter = ParseFiles.getDeclerationCounter();
