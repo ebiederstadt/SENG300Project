@@ -108,7 +108,7 @@ public class ParseFiles extends ASTVisitor {
 	 * @return true to end the visit
 	 */
 	public boolean visit(TypeDeclaration node) throws NullPointerException {
-		String strBinding = node.resolveBinding().getQualifiedName();
+		String strBinding = node.getName().getFullyQualifiedName();
 		if (strBinding.equals(ParseFiles.javaType)) {
 			ParseFiles.declerationCounter++;
 		}

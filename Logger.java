@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Set;
 /**
  * Logger used for debugging purposes
  * @author Elvin
@@ -47,8 +48,7 @@ public class Logger {
 	 * @return this for chaining functions
 	 */
 	public Logger log(String str){
-		if(enabled) System.out.println(str);
-		toLogBook(str);
+		if(enabled) 	toLogBook(str);
 		return this;
 	}
 	
@@ -67,7 +67,7 @@ public class Logger {
 	 */
 	public Logger log(String str, boolean flag){
 		if(flag) System.out.println(str);
-		else if(enabled) System.out.print(str);
+		else if(enabled) log(str, true);
 		toLogBook(str);
 		return this;
 	}	
@@ -89,7 +89,7 @@ public class Logger {
 	 */
 	public Logger enable(boolean alert){
 		enabled = true;
-		if(alert) System.out.println("Logger enabled");
+		if(alert) log("Logger enabled", true);
 		toLogBook("Logger: enable");
 		return this;
 	}
@@ -111,7 +111,7 @@ public class Logger {
 	 */
 	public Logger disable(boolean alert){
 		enabled = false;
-		if(alert) System.out.println("Logger disabled");
+		if(alert) log("Logger disabled", true);
 		toLogBook("Logger: disable");
 		return this;
 	}
@@ -136,9 +136,9 @@ public class Logger {
 	public Logger toggleEnable(boolean alert){
 		enabled = !enabled;
 		if(alert){
-			System.out.print("Logger toggled to ");
-			if(enabled) System.out.println("enabled");
-			else System.out.println("disabled");
+			log("Logger toggled to ", true);
+			if(enabled) log("enabled", true);
+			else log("disabled", true);
 		}
 		toLogBook("Logger: toggled to "+ this.enabled);
 		return this;
@@ -146,7 +146,7 @@ public class Logger {
 	
 	public Logger printAllLogs(){
 		for(String log: logBook){
-			System.out.println(log);
+			log(log, true);
 		}
 		return this;
 	}
@@ -177,5 +177,32 @@ public class Logger {
 	 */
 	private void toLogBook(String str){
 		logBook.add(str);
+	}
+
+	public Logger log(ArrayList<String> allNodes, boolean flag) {
+		if(flag){
+			for(String node: allNodes){
+				this.log(node, true);
+			}
+		}
+		return this;
+	}
+
+	public Logger log(Set<String> allNodes, boolean flag) {
+		if(flag){
+			for(String node: allNodes){
+				this.log(node, true);
+			}
+		}
+		return this;
+	}
+
+	public Logger log(Set<String> allNodes) {
+		if(enabled){
+			for(String node: allNodes){
+				this.log(node, true);
+			}
+		}
+		return this;
 	}
 }

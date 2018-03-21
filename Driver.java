@@ -1,6 +1,8 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Set;
 
 import javax.lang.model.SourceVersion;
 
@@ -35,23 +37,32 @@ public class Driver {
 		
 		File directory = new File(inputDir);
 		File[] fileList = directory.listFiles();
-		ParseFiles parseFiles = new ParseFiles(inputType);
+		Set<String> allNodes = GetNodeUtil.nodesToStringArray(fileList);
+		$.log(allNodes);
 		
-		// For every file in the directory use a AST visitor to count the number of decelerations and references 
-		for (File current:fileList) {
-			char[] source = FileConverter.fileConverter(current);
-			ASTParser parser = ParseFiles.buildParser(source, current.getName(), inputDir);
-			CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-			parseFiles.setRoot(compilationUnit);
-			compilationUnit.accept(parseFiles);
+		for(String node: allNodes){
+			ParseFiles parseFiles = new ParseFiles(node);
+			
+			// For every file in the directory use a AST visitor to count the number of decelerations and references 
+			for (File current:fileList) {
+				char[] source = FileConverter.fileConverter(current);
+				ASTParser parser = ParseFiles.buildParser(source, current.getName(), inputDir);
+				CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
+				parseFiles.setRoot(compilationUnit);
+				compilationUnit.accept(parseFiles);
+			}
+			
+			declerationCounter = ParseFiles.getDeclerationCounter();
+			referenceCounter = ParseFiles.getReferenceCounter();
+			
+			$.log("" + referenceCounter).log("" + declerationCounter);
+			
+			System.out.println(node + ". Declarations found: " + declerationCounter +
+					" References found: " + referenceCounter);
+
+			ParseFiles.setDeclerationCounter(0);
+			ParseFiles.setReferenceCounter(0);
 		}
-		
-		declerationCounter = ParseFiles.getDeclerationCounter();
-		referenceCounter = ParseFiles.getReferenceCounter();
-		$.log("" + referenceCounter).log("" + declerationCounter);
-		
-		System.out.println(inputType + ". Declarations found: " + declerationCounter +
-				" References found: " + referenceCounter);
 	}
 
 }
