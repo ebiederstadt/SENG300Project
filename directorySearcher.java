@@ -16,9 +16,9 @@ public class directorySearcher {
 	 * 				Thrown when no file is found in the directory
 	 */
 	
+	private static List<File> fullFileList = new ArrayList<>();
+	
 	public List<File> searchSubdirectories(String inputDir) throws FileNotFoundException {
-		
-		List<File> fullFileList = new ArrayList<>();
 		
 		File directory = new File(inputDir);
 		File[] fileList = directory.listFiles();
