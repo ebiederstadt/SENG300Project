@@ -40,7 +40,7 @@ public class Driver {
 		File[] fileList = directory.listFiles();
 		Set<String> allNodes = GetNodeUtil.nodesToStringArray(fileList);
 		$.log(allNodes);
-		directorySearcher recursiveSearch = new directorySearcher();
+		DirectorySearcher recursiveSearch = new DirectorySearcher();
 		List<File> fileList1 = recursiveSearch.searchSubdirectories(inputDir);
 		ParseFiles parseFiles = new ParseFiles(inputType);
 		$.log(fileList1.toString(), true);
