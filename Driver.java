@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 public class Driver {
 	
+	static Logger $ = new Logger();
 	private static String inputType;
 	private static int declerationCounter = 0;
 	private static int referenceCounter = 0;
@@ -47,6 +48,7 @@ public class Driver {
 		
 		declerationCounter = ParseFiles.getDeclerationCounter();
 		referenceCounter = ParseFiles.getReferenceCounter();
+		$.log("" + referenceCounter).log("" + declerationCounter);
 		
 		System.out.println(inputType + ". Declarations found: " + declerationCounter +
 				" References found: " + referenceCounter);
