@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import javax.lang.model.SourceVersion;
 
@@ -32,9 +33,10 @@ public class Driver {
 		}
 		inputType = args[1];
 		
-		File directory = new File(inputDir);
-		File[] fileList = directory.listFiles();
+		directorySearcher recursiveSearch = new directorySearcher();
+		List<File> fileList = recursiveSearch.searchSubdirectories(inputDir);
 		ParseFiles parseFiles = new ParseFiles(inputType);
+		System.out.println(fileList);
 		
 		// For every file in the directory use a AST visitor to count the number of decelerations and references 
 		for (File current:fileList) {
