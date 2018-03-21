@@ -171,4 +171,19 @@ public class ParseFiles extends ASTVisitor {
 		return true;
 	}
 	
+	public boolean visit(SimpleName node){
+		String nodeName = node.getFullyQualifiedName();
+		if (nodeName.equals(ParseFiles.javaType)){
+			ParseFiles.referenceCounter++;
+		}
+		return true;
+	}
+	
+	public boolean visit(PrimitiveType node){
+		String nodeName = node.getPrimitiveTypeCode().toString();
+		if (nodeName.equals(ParseFiles.javaType)){
+			ParseFiles.referenceCounter++;
+		}
+		return true;
+	}
 }

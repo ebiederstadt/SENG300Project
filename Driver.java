@@ -31,10 +31,6 @@ public class Driver {
 			System.exit(0);
 		}
 		inputType = args[1];
-		if (! SourceVersion.isName(inputType)) {
-			System.err.println("Not a java type");
-			System.exit(0);                                                                              
-		}
 		
 		File directory = new File(inputDir);
 		File[] fileList = directory.listFiles();
