@@ -13,8 +13,6 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		private String declarationType;
 		
 		public DeclarationAndReferenceVisitor(String declarationType){
-			declarationCounter = 0;
-			referenceAndDeclarationCounter = 0;
 			this.declarationType = declarationType;
 		}
 
@@ -84,11 +82,15 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 
 	/**
 	 * gets the count of declarations and references from a visit
+	 * and resets the counters for a different visit
 	 * @return declaration counter and reference and declaration counter
 	 */
 	public static int[] getCounters(){
 		int[] results = {declarationCounter,
 						referenceAndDeclarationCounter - declarationCounter};
+		
+		// resets the counters for a different visit
+		declarationCounter = referenceAndDeclarationCounter = 0;
 		return results;
 	}
 }
