@@ -33,21 +33,12 @@ public class TypeFinder extends Parser {
 			}
 		}
 		else {
-			JarFile jarFile = new JarFile(dir);
-			Enumeration<JarEntry> entries = jarFile.entries();
-			JarEntry curentry = null;
-			while (entries.hasMoreElements()){
-				curentry = entries.nextElement();
-				if (curentry.getName().endsWith(".java")) {
-					CompilationUnit unit = initAST(new File(curentry.toString()));
-					trees.add(unit);
-					unit.accept(new NameVisitor());
-				}
-				else if (curentry.getName().endsWith(".class") || curentry.isDirectory()) {
-					continue;
-				}
+			for (File f: convertJarFile(dir)) {
+				CompilationUnit unit = initAST(f);
+				
+				trees.add(unit);
+				unit.accept(new NameVisitor());
 			}
-			jarFile.close();
 		}
 	}
 	
@@ -64,7 +55,7 @@ public class TypeFinder extends Parser {
 	}
 	
 	/**
-	 * Cals a recursive method to get a list of all java files
+	 * Calls a recursive method to get a list of all java files
 	 * @param inputDir
 	 * @return list of all java files in inputDir and subdirectories
 	 */
@@ -96,6 +87,31 @@ public class TypeFinder extends Parser {
 	}
 	
 	/**
+	 * Convert a jar file to a(possibly empty) list of java files
+	 * 
+	 * @param file - jar file 
+	 * @return list of length at least zero of all java files found in the jar file
+	 * @throws IOException
+	 */
+	private ArrayList<File> convertJarFile(String file) throws IOException {
+		JarFile jarFile = new JarFile(file);
+		Enumeration<JarEntry> entries = jarFile.entries();
+		ArrayList<File> fileList = new ArrayList<File>();
+		JarEntry curentry = null;
+		while (entries.hasMoreElements()){
+			curentry = entries.nextElement();
+			if (isJavaFile(curentry)) {
+				fileList.add(new File(curentry.getName().toString()));
+			}
+			else if (curentry.getName().endsWith(".class") || curentry.isDirectory()) {
+				continue;
+			}
+		}
+		jarFile.close();
+		return fileList;
+	}
+	
+	/**
 	 * Checks if file exists and is a java file
 	 * @param file
 	 * @return true or false
@@ -106,5 +122,33 @@ public class TypeFinder extends Parser {
 				return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Checks if file exists and is a java file
+	 * @param file
+	 * @return true or false
+	 */
+	private boolean isJavaFile(JarEntry file){
+		if(file.getName().toLowerCase().endsWith(".java")) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Check if a file exists and is a jar file
+	 * @param file
+	 * @return true or false
+	 */
+	private boolean isjarFile(File file) {
+		if (file.isFile()) {
+			if (file.getName().toLowerCase().endsWith(".jar"));
+			return true;
+		}
+		else {
+			return false;
+		}
+		
 	}
 }
