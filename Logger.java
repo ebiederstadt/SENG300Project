@@ -48,7 +48,8 @@ public class Logger {
 	 * @return this for chaining functions
 	 */
 	public Logger log(String str){
-		if(enabled) 	toLogBook(str);
+		if(enabled) log(str, true);
+		toLogBook(str);
 		return this;
 	}
 	

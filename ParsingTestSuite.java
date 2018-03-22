@@ -41,25 +41,15 @@ public class ParsingTestSuite {
 	// nonexistent invalid directory
 	@Test(expected = NullPointerException.class)
 	public void testDriverInvalidDirectory() {
-		try {
-			String[] args = { "invalidDirectory", "java.lang.String" };
-			Driver.main(args);
-		} catch (IOException e) {
-			System.out.println("IO Error while performing testDriverInvalidDirectory\n\n");
-			e.printStackTrace();
-		}
+		String[] args = { "invalidDirectory", "java.lang.String" };
+		Driver.main(args);
 	}
 
 	// Equivalence test. Checks if the Driver accepts a proper directory
 	@Test
 	public void testDriverValidDirectory() {
-		try {
-			String[] args = { BASEDIR, "java.lang.String" };
-			Driver.main(args);
-		} catch (IOException e) {
-			System.out.println("IO Error while performing testDriverValidDirectory\n\n");
-			e.printStackTrace();
-		}
+		String[] args = { BASEDIR, "java.lang.String" };
+		Driver.main(args);
 	}
 
 	// -------------------------- FileConverter CLASS TESTS ----------------------
