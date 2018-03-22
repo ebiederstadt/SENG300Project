@@ -9,7 +9,7 @@ public class NameVisitor extends ASTVisitor {
 	
 	public boolean visit(SimpleName node){
 		if(!nodeList.contains(node))
-				nodeList.add(node.getFullyQualifiedName());
+			nodeList.add(node.getFullyQualifiedName());
 		
 		return true;
 	}

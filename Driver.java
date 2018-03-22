@@ -16,7 +16,7 @@ public class Driver {
 	 * @throws FileNotFoundException
 	 * 				Thrown when no file is found in the directory
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		// Error check the user input for the input directory and java type
 		String inputDir = args[0];
 		$.log(inputDir);
@@ -28,6 +28,7 @@ public class Driver {
 		
 		if (inputDir.endsWith(".jar")) {
 			flag = true;
+			$.log(" + flag");
 		}
 		
 		// Gets all appropriate nodes from a directory and prints

@@ -1,7 +1,11 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
@@ -17,8 +21,9 @@ public class TypeFinder extends Parser {
 	 * directory
 	 * @param dir directory or jar file specified
 	 * @param flag set to false if dir is a directory, true if dir is a jar file
+	 * @throws IOException 
 	 */
-	public TypeFinder(String dir, boolean flag){
+	public TypeFinder(String dir, boolean flag) throws IOException{
 		if (!flag) {
 			for(File f: getJavaFileList(dir)){
 				CompilationUnit unit = initAST(f);
@@ -28,8 +33,21 @@ public class TypeFinder extends Parser {
 			}
 		}
 		else {
-			// Need to convert to .java file
-			
+			JarFile jarFile = new JarFile(dir);
+			Enumeration<JarEntry> entries = jarFile.entries();
+			JarEntry curentry = null;
+			while (entries.hasMoreElements()){
+				curentry = entries.nextElement();
+				if (curentry.getName().endsWith(".java")) {
+					CompilationUnit unit = initAST(new File(curentry.toString()));
+					trees.add(unit);
+					unit.accept(new NameVisitor());
+				}
+				else if (curentry.getName().endsWith(".class") || curentry.isDirectory()) {
+					continue;
+				}
+			}
+			jarFile.close();
 		}
 	}
 	
