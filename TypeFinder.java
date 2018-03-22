@@ -15,20 +15,22 @@ public class TypeFinder extends Parser {
 	 * for each file in directory and subdirectory
 	 * while creating a list of all nodes in the
 	 * directory
-	 * @param dir directory specified
+	 * @param dir directory or jar file specified
+	 * @param flag set to false if dir is a directory, true if dir is a jar file
 	 */
-	public TypeFinder(String dir){
-		for(File f: getJavaFileList(dir)){
-			CompilationUnit unit = initAST(f);
-			
-			trees.add(unit);				// adds to list of compilation units
-			unit.accept(new NameVisitor());		// finds all unique names the files
+	public TypeFinder(String dir, boolean flag){
+		if (!flag) {
+			for(File f: getJavaFileList(dir)){
+				CompilationUnit unit = initAST(f);
+				
+				trees.add(unit);				    // adds to list of compilation units
+				unit.accept(new NameVisitor());		// finds all unique names the files
+			}
 		}
-	}
-	
-	public TypeFinder(String JARFile, boolean flag){
-		System.err.println("Can't do JarFiles!");
-		System.exit(0);
+		else {
+			// Need to convert to .java file
+			
+		}
 	}
 	
 	/**

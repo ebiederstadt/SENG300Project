@@ -4,6 +4,7 @@ import java.io.IOException;
 public class Driver {
 	
 	final static Logger $ = new Logger();
+	private static boolean flag = false;
 	
 	/**
 	 * Mains method, takes in user input for directory
@@ -25,9 +26,13 @@ public class Driver {
 			System.exit(0);
 		}
 		
+		if (inputDir.endsWith(".jar")) {
+			flag = true;
+		}
+		
 		// Gets all appropriate nodes from a directory and prints
 		// Declarations and references
-		TypeFinder tf = new TypeFinder(inputDir);
+		TypeFinder tf = new TypeFinder(inputDir, flag);
 		for(String node: tf.getJavaNodesAsSet()){
 			int[] dr = tf.getDeclarationsAndReferences(node);
 			$.log(node + ". Declarations: " + dr[0] + " References: " + dr[1], true);
