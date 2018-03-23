@@ -12,6 +12,27 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		private static int referenceAndDeclarationCounter;
 		private String declarationType;
 		
+		
+		/**
+		 * Getters and Setters 
+		 */
+		public static void setDeclarationCounter(int counter) {
+			declarationCounter = counter; 
+		}
+		
+		public static int getDeclarationCounter() {
+			return declarationCounter; 
+		}
+		
+		public static void setReferenceCounter(int counter) {
+			referenceAndDeclarationCounter = counter; 
+		}
+		
+		public static int getReferenceCounter() {
+			return referenceAndDeclarationCounter; 
+		}
+		
+		
 		public DeclarationAndReferenceVisitor(String declarationType){
 			this.declarationType = declarationType;
 		}
@@ -23,7 +44,7 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 			}
 			return true;
 		}
-		
+				
 		/**
 		 * Visit a node in the AST of type TypeDeclaration
 		 * @param node

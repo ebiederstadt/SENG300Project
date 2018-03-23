@@ -44,7 +44,7 @@ public class Parser {
 	 * @param path -- path of the file
 	 * @return contents of the file in a string
 	 */
-	private char[] fileContentToCharArray(String path){
+	public char[] fileContentToCharArray(String path){
 		$.log("reading file from " + path);
 		try{
 			return new String(Files.readAllBytes(Paths.get(path))).toCharArray();

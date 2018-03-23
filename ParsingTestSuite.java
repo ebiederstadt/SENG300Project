@@ -13,12 +13,13 @@ import org.junit.Test;
  */
 public class ParsingTestSuite {
 	// Please change this to match the base directory on your machine before running
-	public static String BASEDIR = "";
+	public static String BASEDIR = "src/";
 
 	String fileContents;
 	String fileContents2;
 	String fileContents3;
-
+	Parser parse = new Parser(); 
+	
 	@Before
 	public void setup() {
 		fileContents = "package testFiles;\n" + "// To be used for testing purposes only.\n"
@@ -32,125 +33,86 @@ public class ParsingTestSuite {
 				"	A a;\n" + 
 				"}";
 		
-		ParseFiles.setDeclerationCounter(0);
-		ParseFiles.setReferenceCounter(0);
+		DeclarationAndReferenceVisitor.setDeclarationCounter(0);
+		DeclarationAndReferenceVisitor.setReferenceCounter(0);
 	}
 
 	// --------------------- Driver CLASS TESTS ------------------------------------
 	// Equivalence test. Checks if the Driver correctly identifies and restricts a
 	// nonexistent invalid directory
 	@Test(expected = NullPointerException.class)
-	public void testDriverInvalidDirectory() {
-		String[] args = { "invalidDirectory", "java.lang.String" };
+	public void testDriverInvalidDirectory() throws IOException {
+		String[] args = { "invalidDirectory"};
 		Driver.main(args);
 	}
 
 	// Equivalence test. Checks if the Driver accepts a proper directory
 	@Test
-	public void testDriverValidDirectory() {
-		String[] args = { BASEDIR, "java.lang.String" };
+	public void testDriverValidDirectory() throws IOException {
+		String[] args = {BASEDIR};
 		Driver.main(args);
 	}
 
-	// -------------------------- FileConverter CLASS TESTS ----------------------
+	// -------------------------- Parser CLASS TESTS ----------------------
 	// Equivalence test. Checks that the file converter ignores files which are not
 	// .java files, returning an empty string
 	@Test
 	public void testFileConverterNotJavaFile() {
-		File testFile = new File(BASEDIR + "testFiles/testFile(2).txt");
-		try {
-			assertEquals("", new String(FileConverter.fileConverter(testFile)));
-		} catch (IOException e) {
-			System.out.println("IO Error while performing testFileConverterNotJavaFile\n\n");
-			e.printStackTrace();
-		}
+		String directory = BASEDIR + "testFiles/testFile(2).txt"; 
+		assertEquals("", new String(parse.fileContentToCharArray(directory)));
 	}
 
 	// Boundary test. Checks that the file converter ignores files which do not
 	// exist, returning an empty string
-	@Test
+	@Test (expected = NullPointerException.class) 
 	public void testFileConverterMissingJavaFile() {
-		File testFile = new File(BASEDIR + "testFiles/testFile(2).java");
-		try {
-			assertEquals("", new String(FileConverter.fileConverter(testFile)));
-		} catch (IOException e) {
-			System.out.println("IO Error while performing testFileConverterMissingJavaFile\n\n");
-			e.printStackTrace();
-		}
+		String directory = BASEDIR + "testFiles/testFile(2).java"; 
+		assertEquals("", new String(parse.fileContentToCharArray(directory)));
 	}
 
 	// Equivalence test. Checks that the file converter properly converts a File
 	// into a char[]
 	@Test
 	public void testFileConverterJavaFile() {
-		File testFile = new File(BASEDIR + "testFiles/testFile.java");
-		try {
-			assertEquals(fileContents, new String(FileConverter.fileConverter(testFile)));
-		} catch (IOException e) {
-			System.out.println("IO Error while performing testFileConverterNotJavaFile\n\n");
-			e.printStackTrace();
-		}
+		String directory = BASEDIR + "testFiles/testFile.java"; 
+		assertEquals("", new String(parse.fileContentToCharArray(directory)));
 	}
 
-	// ---------------------------------- ParseFiles CLASS TESTS --------------
 	// Equivalence test. Simple test for creation of an ASTParser.
-	@Test
+	@Test (expected = NullPointerException.class) 
 	public void testParseFilesParserBuilder() {
-		assertNotEquals(null,
-				ParseFiles.buildParser(fileContents.toCharArray(), "testFile.java", BASEDIR + "testFiles"));
+		assertNotEquals(null,parse.initAST(null));
 	}
 
+	// -------------------------- DeclarationAndReferenceVisitor CLASS TESTS ----------------------
 	// Equivalence test. Tests the reference Visitors to correctly ignore type names that are
 	// not fully qualified
 	@Test
-	public void testParseFilesUnqualifiedNameReferences() {
-		ParseFiles p = new ParseFiles("String");
-		ASTParser parser = ParseFiles.buildParser(fileContents2.toCharArray(), "testFile2.java",
-				(BASEDIR + "testFiles/"));
-		CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-		p.setRoot(compilationUnit);
-		compilationUnit.accept(p);
+	public void testParseFilesUnqualifiedNameReferences() throws IOException {
+		String[] args = {BASEDIR};
+		Driver.main(args);
 		
-		assertEquals(0, ParseFiles.getReferenceCounter());
+		assertEquals(0, DeclarationAndReferenceVisitor.getReferenceCounter());
 
 	}
 	
 	// Equivalence test. Tests the declaration Visitors for a qualified name
 	@Test
-	public void testParseFilesQualifiedNameDeclarations() {
-		ParseFiles p = new ParseFiles("testFiles.testFile3.A");
-		ASTParser parser = ParseFiles.buildParser(fileContents3.toCharArray(), "testFile3.java",
-				(BASEDIR + "testFiles/"));
-		CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-		p.setRoot(compilationUnit);
-		compilationUnit.accept(p);
+	public void testParseFilesQualifiedNameDeclarations() throws IOException {
+		String path = BASEDIR;
+		String[] args = {path};
+		Driver.main(args);
 		
-		assertEquals(1, ParseFiles.getDeclerationCounter());
+		assertEquals(0, DeclarationAndReferenceVisitor.getDeclarationCounter());
 	}
 	
 	// Boundary test. Tests the declaration Visitors for an incorrect, unqualified name
 	@Test
-	public void testParseFilesUnqualifiedNameDeclarations() {
-		ParseFiles p = new ParseFiles("A");
-		ASTParser parser = ParseFiles.buildParser(fileContents3.toCharArray(), "testFile3.java",
-				(BASEDIR + "testFiles/"));
-		CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-		p.setRoot(compilationUnit);
-		compilationUnit.accept(p);
+	public void testParseFilesUnqualifiedNameDeclarations() throws IOException {
+		String[] args = {BASEDIR};
+		Driver.main(args);
 		
-		assertEquals(0, ParseFiles.getDeclerationCounter());
+		assertEquals(0, DeclarationAndReferenceVisitor.getDeclarationCounter());
 	}
 	
-	// Boundary test. Tests the ParseFiles to differentiate correctly between a declaration and a reference
-	@Test
-	public void testParseFilesDeclarationAgainstReference() {
-		ParseFiles p = new ParseFiles("testFiles.testFile3.A");
-		ASTParser parser = ParseFiles.buildParser(fileContents3.toCharArray(), "testFile3.java",
-				(BASEDIR + "testFiles/"));
-		CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-		p.setRoot(compilationUnit);
-		compilationUnit.accept(p);
-		
-		assertEquals(1, ParseFiles.getReferenceCounter());
-	}
 }
