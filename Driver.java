@@ -22,11 +22,9 @@ public class Driver {
 		$.log(inputDir);
 		
 		if (inputDir.equals(null)) {
-			System.err.println("Directory does not exist");
+			$.log("Directory does not exist", true);
 			System.exit(0);
-		}
-		
-		if (inputDir.endsWith(".jar")) {
+		} else if (inputDir.endsWith(".jar")) {
 			flag = true;
 			$.log(" + flag");
 		}

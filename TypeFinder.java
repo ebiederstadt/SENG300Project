@@ -84,8 +84,10 @@ public class TypeFinder extends Parser {
 		for (File file: currentList) {
 			if (isJavaFile(file)) 
 				fullFileList.add(file);
+			
 			else if (file.isDirectory())
 				subdirectoriesToFiles(file.getAbsolutePath(), fullFileList);
+			
 			else if (isJarFile(file))
 				subdirectoriesToFiles(convertJarFile(file.getName()), fullFileList);
 		}
@@ -105,8 +107,10 @@ public class TypeFinder extends Parser {
 		for (File file: currentList) {
 			if (isJavaFile(file)) 
 				fullFileList.add(file);
+			
 			else if (file.isDirectory())
 				subdirectoriesToFiles(file.getAbsolutePath(), fullFileList);
+			
 			else if (isJarFile(file))
 				subdirectoriesToFiles(convertJarFile(file.getName()), fullFileList);
 		}
@@ -125,6 +129,7 @@ public class TypeFinder extends Parser {
 		Enumeration<JarEntry> entries = jarFile.entries();
 		ArrayList<File> fileList = new ArrayList<File>();
 		JarEntry curentry = null;
+		
 		while (entries.hasMoreElements()){
 			curentry = entries.nextElement();
 			if (isJavaFile(curentry)) {
