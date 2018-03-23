@@ -51,7 +51,7 @@ public class Parser {
 		} catch(IOException e){
 			$.log("File Content To Char Array got IOEException", true);
 			e.printStackTrace();
-			return null;
+			return "".toCharArray();
 		}
 	}
 	

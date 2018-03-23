@@ -60,7 +60,12 @@ public class TypeFinder extends Parser {
 	 * @return list of all java files in inputDir and subdirectories
 	 */
 	private ArrayList<File> getJavaFileList(String inputDir){
-		return subdirectoriesToFiles(inputDir, new ArrayList<File>());
+		try {
+			return subdirectoriesToFiles(inputDir, new ArrayList<File>());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	/**
@@ -68,20 +73,42 @@ public class TypeFinder extends Parser {
 	 * 
 	 * @author Jason
 	 * @param inputDir String of the command line argument for the directory
+	 * @throws IOException 
 	 * @throws FileNotFoundException
 	 * 				Thrown when no file is found in the directory
 	 */
-	private ArrayList<File> subdirectoriesToFiles(String inputDir, ArrayList<File> fullFileList) {
+	private ArrayList<File> subdirectoriesToFiles(String inputDir, ArrayList<File> fullFileList) throws IOException {
 		ArrayList<File> currentList =
 				new ArrayList<File>(Arrays.asList(new File(inputDir).listFiles()));
 		
 		for (File file: currentList) {
-			if (isJavaFile(file)) {
+			if (isJavaFile(file)) 
 				fullFileList.add(file);
-			}
-			else if (file.isDirectory()) {
+			else if (file.isDirectory())
 				subdirectoriesToFiles(file.getAbsolutePath(), fullFileList);
-			}
+			else if (isJarFile(file))
+				subdirectoriesToFiles(convertJarFile(file.getName()), fullFileList);
+		}
+		return fullFileList;
+	}
+
+	/**
+	 * Recursive method that searches for files in a directory and its sub-directories
+	 * 
+	 * @author Jason
+	 * @param inputDir String of the command line argument for the directory
+	 * @throws IOException 
+	 * @throws FileNotFoundException
+	 * 				Thrown when no file is found in the directory
+	 */
+	private ArrayList<File> subdirectoriesToFiles(ArrayList<File> currentList, ArrayList<File> fullFileList) throws IOException {		
+		for (File file: currentList) {
+			if (isJavaFile(file)) 
+				fullFileList.add(file);
+			else if (file.isDirectory())
+				subdirectoriesToFiles(file.getAbsolutePath(), fullFileList);
+			else if (isJarFile(file))
+				subdirectoriesToFiles(convertJarFile(file.getName()), fullFileList);
 		}
 		return fullFileList;
 	}
@@ -117,10 +144,8 @@ public class TypeFinder extends Parser {
 	 * @return true or false
 	 */
 	private boolean isJavaFile(File file){
-		if(file.isFile()){
-			if(file.getName().toLowerCase().endsWith(".java"))
-				return true;
-		}
+		if(file.isFile())
+			return file.getName().toLowerCase().endsWith(".java");
 		return false;
 	}
 	
@@ -130,25 +155,16 @@ public class TypeFinder extends Parser {
 	 * @return true or false
 	 */
 	private boolean isJavaFile(JarEntry file){
-		if(file.getName().toLowerCase().endsWith(".java")) {
-			return true;
-		}
-		return false;
-	}
-	
+		return file.getName().toLowerCase().endsWith(".java");
+	}	
 	/**
 	 * Check if a file exists and is a jar file
 	 * @param file
 	 * @return true or false
 	 */
-	private boolean isjarFile(File file) {
-		if (file.isFile()) {
-			if (file.getName().toLowerCase().endsWith(".jar"));
-			return true;
-		}
-		else {
-			return false;
-		}
-		
+	private boolean isJarFile(File file) {
+		if(file.isFile())
+			return file.getName().toLowerCase().endsWith(".jar");
+		return false;
 	}
 }

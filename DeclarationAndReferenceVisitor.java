@@ -8,30 +8,10 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 public class DeclarationAndReferenceVisitor extends ASTVisitor {
 			
 		final Logger $ = new Logger();
+		
 		private static int declarationCounter;
 		private static int referenceAndDeclarationCounter;
 		private String declarationType;
-		
-		
-		/**
-		 * Getters and Setters 
-		 */
-		public static void setDeclarationCounter(int counter) {
-			declarationCounter = counter; 
-		}
-		
-		public static int getDeclarationCounter() {
-			return declarationCounter; 
-		}
-		
-		public static void setReferenceCounter(int counter) {
-			referenceAndDeclarationCounter = counter; 
-		}
-		
-		public static int getReferenceCounter() {
-			return referenceAndDeclarationCounter; 
-		}
-		
 		
 		public DeclarationAndReferenceVisitor(String declarationType){
 			this.declarationType = declarationType;
@@ -39,9 +19,8 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 
 		public boolean visit(EnumDeclaration node) throws NullPointerException {
 			String strBinding = node.resolveBinding().getQualifiedName();
-			if (strBinding.equals(declarationType)) {
+			if (strBinding.equals(declarationType))
 				declarationCounter++;
-			}
 			return true;
 		}
 				
@@ -53,9 +32,8 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		 */
 		public boolean visit(TypeDeclaration node) {
 			String strBinding = node.resolveBinding().getQualifiedName();
-			if (strBinding.equals(declarationType)) {
+			if (strBinding.equals(declarationType))
 				declarationCounter++;
-			}
 			return true;
 		}
 		
@@ -67,9 +45,8 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		 */
 		public boolean visit(AnnotationTypeDeclaration node) throws NullPointerException {
 			String strBinding = node.resolveBinding().getQualifiedName();
-			if (strBinding.equals(declarationType)) {
+			if (strBinding.equals(declarationType))
 				declarationCounter++;
-			}
 			return true;
 		}
 		
@@ -81,9 +58,8 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		 */
 		public boolean visit(SimpleName node){
 			String nodeString = node.getFullyQualifiedName();
-			if(declarationType.equals(nodeString)){
+			if(declarationType.equals(nodeString))
 				referenceAndDeclarationCounter++;
-			}
 			$.log(nodeString);
 			return true;
 		}
@@ -93,9 +69,8 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		 */
 		public boolean visit(PrimitiveType node){
 			String nodeString = node.getPrimitiveTypeCode().toString();
-			if(declarationType.equals(nodeString)){
+			if(declarationType.equals(nodeString))
 				referenceAndDeclarationCounter++;
-			}
 			$.log(nodeString);
 			return true;
 		}
@@ -114,4 +89,24 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		declarationCounter = referenceAndDeclarationCounter = 0;
 		return results;
 	}
+	
+	/**
+	 * Getters and Setters only for testing purposes
+	 */
+	protected static void setDeclarationCounter(int counter) {
+		declarationCounter = counter; 
+	}
+	
+	protected static int getDeclarationCounter() {
+		return declarationCounter; 
+	}
+	
+	protected static void setReferenceCounter(int counter) {
+		referenceAndDeclarationCounter = counter; 
+	}
+	
+	protected static int getReferenceCounter() {
+		return referenceAndDeclarationCounter; 
+	}
+	
 }

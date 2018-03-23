@@ -2,6 +2,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -64,7 +65,7 @@ public class ParsingTestSuite {
 
 	// Boundary test. Checks that the file converter ignores files which do not
 	// exist, returning an empty string
-	@Test (expected = NullPointerException.class) 
+	@Test
 	public void testFileConverterMissingJavaFile() {
 		String directory = BASEDIR + "testFiles/testFile(2).java"; 
 		assertEquals("", new String(parse.fileContentToCharArray(directory)));
@@ -91,7 +92,6 @@ public class ParsingTestSuite {
 	public void testParseFilesUnqualifiedNameReferences() throws IOException {
 		String[] args = {BASEDIR};
 		Driver.main(args);
-		
 		assertEquals(0, DeclarationAndReferenceVisitor.getReferenceCounter());
 
 	}
