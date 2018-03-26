@@ -89,7 +89,7 @@ public class TypeFinder extends Parser {
 				subdirectoriesToFiles(file.getAbsolutePath(), fullFileList);
 			
 			else if (isJarFile(file))
-				subdirectoriesToFiles(convertJarFile(file.getName()), fullFileList);
+				subdirectoriesToFiles(convertJarFile(file.getAbsolutePath()), fullFileList);
 		}
 		return fullFileList;
 	}
@@ -111,8 +111,9 @@ public class TypeFinder extends Parser {
 			else if (file.isDirectory())
 				subdirectoriesToFiles(file.getAbsolutePath(), fullFileList);
 			
-			else if (isJarFile(file))
-				subdirectoriesToFiles(convertJarFile(file.getName()), fullFileList);
+			else if (isJarFile(file)) {
+				subdirectoriesToFiles(convertJarFile(file.getAbsolutePath()), fullFileList);
+			}
 		}
 		return fullFileList;
 	}
@@ -125,22 +126,29 @@ public class TypeFinder extends Parser {
 	 * @throws IOException
 	 */
 	private ArrayList<File> convertJarFile(String file) throws IOException {
-		JarFile jarFile = new JarFile(file);
-		Enumeration<JarEntry> entries = jarFile.entries();
-		ArrayList<File> fileList = new ArrayList<File>();
-		JarEntry curentry = null;
-		
-		while (entries.hasMoreElements()){
-			curentry = entries.nextElement();
-			if (isJavaFile(curentry)) {
-				fileList.add(new File(curentry.getName().toString()));
+		try {
+			JarFile jarFile = new JarFile(file);
+			Enumeration<JarEntry> entries = jarFile.entries();
+			ArrayList<File> fileList = new ArrayList<File>();
+			JarEntry curentry = null;
+			
+			while (entries.hasMoreElements()){
+				curentry = entries.nextElement();
+				if (isJavaFile(curentry)) {
+					fileList.add(new File(curentry.getName()));
+				}
+				else if (curentry.getName().endsWith(".class") || curentry.isDirectory()) {
+					continue;
+				}
 			}
-			else if (curentry.getName().endsWith(".class") || curentry.isDirectory()) {
-				continue;
-			}
+			jarFile.close();
+			return fileList;
+		} 
+		catch (FileNotFoundException e) {
+			System.err.println("File was not found");
+			e.printStackTrace();
+			return new ArrayList<File>(); 
 		}
-		jarFile.close();
-		return fileList;
 	}
 	
 	/**

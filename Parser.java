@@ -1,5 +1,8 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -7,6 +10,7 @@ import java.util.Map;
 
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.*;
+import org.omg.CORBA.portable.InputStream;
 
 public class Parser {
 	
@@ -18,6 +22,7 @@ public class Parser {
 	 * @param file -- file to parse
 	 * @param declarationType -- declarationType to search as node
 	 * @return compilation unit for the file
+	 * @throws IOException 
 	 */
 	protected CompilationUnit initAST(File file){
 		ASTParser parser = ASTParser.newParser(AST.JLS8);
@@ -43,17 +48,20 @@ public class Parser {
 	 * Outputs contents of a file as a string
 	 * @param path -- path of the file
 	 * @return contents of the file in a string
+	 * @throws IOException 
 	 */
 	public char[] fileContentToCharArray(String path){
 		$.log("reading file from " + path);
 		try{
 			return new String(Files.readAllBytes(Paths.get(path))).toCharArray();
-		} catch(IOException e){
+		} 
+		catch(IOException e){
 			$.log("File Content To Char Array got IOEException", true);
 			e.printStackTrace();
 			return "".toCharArray();
 		}
 	}
+		
 	
 	public HashSet<String> getJavaNodesAsSet(){
 		return new HashSet<String>(NameVisitor.getNodelist());

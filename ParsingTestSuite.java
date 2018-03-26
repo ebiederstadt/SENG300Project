@@ -19,12 +19,12 @@ public class ParsingTestSuite {
 	String fileContents;
 	String fileContents2;
 	String fileContents3;
+	String fileContents4;
 	Parser parse = new Parser(); 
 	
 	@Before
 	public void setup() {
-		fileContents = "package testFiles;\n" + "// To be used for testing purposes only.\n"
-				+ "public class testFile {\n" + "}\n";
+		fileContents = "package testFiles;public class testFile {}";
 		fileContents2 = "package testFiles;\n" + "// To be used for testing purposes only.\n"
 				+ "public class testFile2 {\n" + "	String ref = new String();\n" + "}";
 		fileContents3 = "package testFiles;\n" + 
@@ -33,6 +33,7 @@ public class ParsingTestSuite {
 				"	public class A{}\n" + 
 				"	A a;\n" + 
 				"}";
+		fileContents4 = "This file is for testing purposes only. If the implementation is correct then this is expected to be ignored. ";
 		
 		DeclarationAndReferenceVisitor.setDeclarationCounter(0);
 		DeclarationAndReferenceVisitor.setReferenceCounter(0);
@@ -55,16 +56,16 @@ public class ParsingTestSuite {
 	}
 
 	// -------------------------- Parser CLASS TESTS ----------------------
-	// Equivalence test. Checks that the file converter ignores files which are not
-	// .java files, returning an empty string
+	// Equivalence test. Checks that the file converter treats files that are not
+	// .java files just like any other file and returns the content of the file
 	@Test
 	public void testFileConverterNotJavaFile() {
 		String directory = BASEDIR + "testFiles/testFile(2).txt"; 
-		assertEquals("", new String(parse.fileContentToCharArray(directory)));
+		assertEquals(fileContents4, new String(parse.fileContentToCharArray(directory)));
 	}
 
-	// Boundary test. Checks that the file converter ignores files which do not
-	// exist, returning an empty string
+	// Boundary test. Checks that the file converter ignores files which do not exist,
+	// returning an empty directory
 	@Test
 	public void testFileConverterMissingJavaFile() {
 		String directory = BASEDIR + "testFiles/testFile(2).java"; 
@@ -76,7 +77,7 @@ public class ParsingTestSuite {
 	@Test
 	public void testFileConverterJavaFile() {
 		String directory = BASEDIR + "testFiles/testFile.java"; 
-		assertEquals("", new String(parse.fileContentToCharArray(directory)));
+		assertEquals(fileContents, new String(parse.fileContentToCharArray(directory)));
 	}
 
 	// Equivalence test. Simple test for creation of an ASTParser.
@@ -114,5 +115,44 @@ public class ParsingTestSuite {
 		
 		assertEquals(0, DeclarationAndReferenceVisitor.getDeclarationCounter());
 	}
+	
+	// Equivalence test. Tests the declaration visitors for a jar file that has java files
+	@Test
+	public void testParseFilesJarFileNoJavaFilesDeclaration() throws IOException {
+		String[] args = {BASEDIR + "testFiles/JarTest2.jar"};
+		Driver.main(args);
+		
+		assertEquals(0, DeclarationAndReferenceVisitor.getDeclarationCounter());
+	}
+	
+	// Equivalence test. Tests the reference visitors for a jar file that has not java files
+	@Test
+	public void testParseFilesJarFileNoJavaFilesReference() throws IOException {
+		String[] args = {BASEDIR + "testFiles/JarTest2.jar"};
+		Driver.main(args);
+		
+		assertEquals(0, DeclarationAndReferenceVisitor.getReferenceCounter());
+	}
+	
+	// Equivalence test. Test the declaration visitors for a jar file that has one java file
+	// which contains one type declaration
+	@Test
+	public void testParseFilesJarFileOneJavaFileDecleration() throws IOException {
+		String[] args = {BASEDIR + "testFiles/jarTest.jar"};
+		Driver.main(args);
+		
+		assertEquals(1, DeclarationAndReferenceVisitor.getDeclarationCounter());
+		}
+	
+	// Equivalence test. Test the reference visitors for a jar file that has one java file 
+	// which contains one type reference to java.lang.String
+	@Test
+	public void testParseFilesJarFileOneJavaFileReference() throws IOException {
+		String[] args = {BASEDIR +  "testFiles/JarTest.jar"};
+		Driver.main(args);
+		
+		assertEquals(1, DeclarationAndReferenceVisitor.getReferenceCounter());
+	}
+	
 	
 }
