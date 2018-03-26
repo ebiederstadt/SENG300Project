@@ -1,9 +1,11 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
 
+=======
+>>>>>>> fbf8bf9ca7aadbb5b25298eb0654cd59c50525d6
 import org.junit.Before;
 import org.junit.Test;
 

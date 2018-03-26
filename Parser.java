@@ -1,7 +1,5 @@
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -12,9 +10,13 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.eclipse.jdt.core.JavaCore;
+<<<<<<< HEAD
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+=======
+import org.eclipse.jdt.core.dom.*;
+>>>>>>> fbf8bf9ca7aadbb5b25298eb0654cd59c50525d6
 
 public class Parser {
 	

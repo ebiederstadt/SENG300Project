@@ -85,10 +85,14 @@ public class TypeFinder extends Parser {
 				fullFileList.add(file);
 			
 			else if (file.isDirectory())
-				subdirectoriesToFiles(file.getAbsolutePath(), fullFileList);
+				subdirectoriesToFiles(file.getPath(), fullFileList);
 			
 			else if (isJarFile(file))
+<<<<<<< HEAD
 				subdirectoriesToFiles(jarToFile(file), fullFileList);
+=======
+				subdirectoriesToFiles(convertJarFile(file.getPath()), fullFileList);
+>>>>>>> fbf8bf9ca7aadbb5b25298eb0654cd59c50525d6
 		}
 		return fullFileList;
 	}
@@ -107,9 +111,17 @@ public class TypeFinder extends Parser {
 			if (isJavaFile(file)) 
 				fullFileList.add(file);
 			
+<<<<<<< HEAD
 			else if (file.isDirectory()){
 				$.log(file.toString());
 				subdirectoriesToFiles(file.getAbsolutePath(), fullFileList);
+=======
+			else if (file.isDirectory())
+				subdirectoriesToFiles(file.getPath(), fullFileList);
+			
+			else if (isJarFile(file)) {
+				subdirectoriesToFiles(convertJarFile(file.getPath()), fullFileList);
+>>>>>>> fbf8bf9ca7aadbb5b25298eb0654cd59c50525d6
 			}
 			else if (isJarFile(file))
 				subdirectoriesToFiles(jarToFile(file), fullFileList);

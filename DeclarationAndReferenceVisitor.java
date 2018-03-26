@@ -18,7 +18,7 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		}
 
 		public boolean visit(EnumDeclaration node) throws NullPointerException {
-			String strBinding = node.getName().getFullyQualifiedName();
+			String strBinding = nodeBinding(node.getName().getFullyQualifiedName());
 			if (strBinding.equals(declarationType))
 				declarationCounter++;
 			return true;
@@ -31,7 +31,7 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		 * @return true to end the visit
 		 */
 		public boolean visit(TypeDeclaration node) {
-			String strBinding = node.getName().getFullyQualifiedName();
+			String strBinding = nodeBinding(node.getName().getFullyQualifiedName());
 			if (strBinding.equals(declarationType))
 				declarationCounter++;
 			return true;
@@ -44,7 +44,7 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		 * @return true to end the visit
 		 */
 		public boolean visit(AnnotationTypeDeclaration node) throws NullPointerException {
-			String strBinding = node.getName().getFullyQualifiedName();
+			String strBinding = nodeBinding(node.getName().getFullyQualifiedName());
 			if (strBinding.equals(declarationType))
 				declarationCounter++;
 			return true;
@@ -88,6 +88,17 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		// resets the counters for a different visit
 		declarationCounter = referenceAndDeclarationCounter = 0;
 		return results;
+	}
+	
+	private String nodeBinding(String strBinding){
+		while (strBinding.contains(".")) {
+			int count = strBinding.length() - (strBinding.replace(".", "")).length();
+			if (count > 1)
+				strBinding = strBinding.substring(strBinding.indexOf('.', count));
+			if (count == 1)
+				strBinding = strBinding.substring(1);
+		}
+		return strBinding;
 	}
 	
 	/**
