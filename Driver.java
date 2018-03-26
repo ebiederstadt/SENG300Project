@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -22,10 +21,7 @@ public class Driver {
 		String inputDir = args[0];
 		$.log(inputDir);
 		
-		if (inputDir.equals(null)) {
-			$.log("Directory does not exist", true);
-			System.exit(0);
-		} else if (inputDir.endsWith(".jar")) {
+		if (inputDir.endsWith(".jar")) {
 			flag = true;
 			$.log(" + flag");
 		}

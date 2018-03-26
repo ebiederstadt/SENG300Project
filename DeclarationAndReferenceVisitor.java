@@ -18,7 +18,7 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		}
 
 		public boolean visit(EnumDeclaration node) throws NullPointerException {
-			String strBinding = node.resolveBinding().getQualifiedName();
+			String strBinding = node.getName().getFullyQualifiedName();
 			if (strBinding.equals(declarationType))
 				declarationCounter++;
 			return true;
@@ -31,7 +31,7 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		 * @return true to end the visit
 		 */
 		public boolean visit(TypeDeclaration node) {
-			String strBinding = node.resolveBinding().getQualifiedName();
+			String strBinding = node.getName().getFullyQualifiedName();
 			if (strBinding.equals(declarationType))
 				declarationCounter++;
 			return true;
@@ -44,7 +44,7 @@ public class DeclarationAndReferenceVisitor extends ASTVisitor {
 		 * @return true to end the visit
 		 */
 		public boolean visit(AnnotationTypeDeclaration node) throws NullPointerException {
-			String strBinding = node.resolveBinding().getQualifiedName();
+			String strBinding = node.getName().getFullyQualifiedName();
 			if (strBinding.equals(declarationType))
 				declarationCounter++;
 			return true;

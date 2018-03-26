@@ -33,15 +33,14 @@ public class TypeFinder extends Parser {
 			}
 		}
 		else {
-			for (File f: convertJarFile(dir)) {
-				CompilationUnit unit = initAST(f);
+			for (char[] c: jarToCharArray(dir)) {
+				CompilationUnit unit = initAST(c);
 				
 				trees.add(unit);
 				unit.accept(new NameVisitor());
 			}
 		}
 	}
-	
 	/**
 	 * Visits compilation unit and finds declarations and
 	 * references to specified node
@@ -89,7 +88,7 @@ public class TypeFinder extends Parser {
 				subdirectoriesToFiles(file.getAbsolutePath(), fullFileList);
 			
 			else if (isJarFile(file))
-				subdirectoriesToFiles(convertJarFile(file.getAbsolutePath()), fullFileList);
+				subdirectoriesToFiles(jarToFile(file), fullFileList);
 		}
 		return fullFileList;
 	}
@@ -108,12 +107,12 @@ public class TypeFinder extends Parser {
 			if (isJavaFile(file)) 
 				fullFileList.add(file);
 			
-			else if (file.isDirectory())
+			else if (file.isDirectory()){
+				$.log(file.toString());
 				subdirectoriesToFiles(file.getAbsolutePath(), fullFileList);
-			
-			else if (isJarFile(file)) {
-				subdirectoriesToFiles(convertJarFile(file.getAbsolutePath()), fullFileList);
 			}
+			else if (isJarFile(file))
+				subdirectoriesToFiles(jarToFile(file), fullFileList);
 		}
 		return fullFileList;
 	}
@@ -125,30 +124,23 @@ public class TypeFinder extends Parser {
 	 * @return list of length at least zero of all java files found in the jar file
 	 * @throws IOException
 	 */
-	private ArrayList<File> convertJarFile(String file) throws IOException {
-		try {
-			JarFile jarFile = new JarFile(file);
-			Enumeration<JarEntry> entries = jarFile.entries();
-			ArrayList<File> fileList = new ArrayList<File>();
-			JarEntry curentry = null;
-			
-			while (entries.hasMoreElements()){
-				curentry = entries.nextElement();
-				if (isJavaFile(curentry)) {
-					fileList.add(new File(curentry.getName()));
-				}
-				else if (curentry.getName().endsWith(".class") || curentry.isDirectory()) {
-					continue;
-				}
+	protected ArrayList<File> jarToFile(File file) throws IOException {
+		JarFile jarFile = new JarFile(file);
+		Enumeration<JarEntry> entries = jarFile.entries();
+		ArrayList<File> fileList = new ArrayList<File>();
+		JarEntry curentry = null;
+		
+		while (entries.hasMoreElements()){
+			curentry = entries.nextElement();
+			if (isJavaFile(curentry)) {
+				fileList.add(new File(curentry.getName().toString()));
 			}
-			jarFile.close();
-			return fileList;
-		} 
-		catch (FileNotFoundException e) {
-			System.err.println("File was not found");
-			e.printStackTrace();
-			return new ArrayList<File>(); 
+			else if (curentry.getName().endsWith(".class") || curentry.isDirectory()) {
+				continue;
+			}
 		}
+		jarFile.close();
+		return fileList;
 	}
 	
 	/**
