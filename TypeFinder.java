@@ -25,7 +25,7 @@ public class TypeFinder extends Parser {
 	 */
 	public TypeFinder(String dir, boolean flag) throws IOException{
 		if (!flag) {
-			for(File f: getJavaFileList(dir)){
+			for(char[] f: getJavaFileList(dir)){
 				CompilationUnit unit = initAST(f);
 				
 				trees.add(unit);				    // adds to list of compilation units
@@ -58,9 +58,9 @@ public class TypeFinder extends Parser {
 	 * @param inputDir
 	 * @return list of all java files in inputDir and subdirectories
 	 */
-	private ArrayList<File> getJavaFileList(String inputDir){
+	private ArrayList<char[]> getJavaFileList(String inputDir){
 		try {
-			return subdirectoriesToFiles(inputDir, new ArrayList<File>());
+			return subdirectoriesToFiles(inputDir, new ArrayList<char[]>());
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -76,9 +76,9 @@ public class TypeFinder extends Parser {
 	 * @throws FileNotFoundException
 	 * 				Thrown when no file is found in the directory
 	 */
-	private ArrayList<File> subdirectoriesToFiles(String inputDir, ArrayList<File> fullFileList) throws IOException {
-		ArrayList<File> currentList =
-				new ArrayList<File>(Arrays.asList(new File(inputDir).listFiles()));
+	private ArrayList<char[]> subdirectoriesToFiles(String inputDir, ArrayList<char[]> fullFileList) throws IOException {
+		ArrayList<char[]> currentList =
+				new ArrayList<char[]>(Arrays.asList(new File(inputDir).listFiles()));
 		
 		for (File file: currentList) {
 			if (isJavaFile(file)) 
@@ -102,7 +102,7 @@ public class TypeFinder extends Parser {
 	 * @throws FileNotFoundException
 	 * 				Thrown when no file is found in the directory
 	 */
-	private ArrayList<File> subdirectoriesToFiles(ArrayList<File> currentList, ArrayList<File> fullFileList) throws IOException {		
+	private ArrayList<char[]> subdirectoriesToFiles(ArrayList<char[]> currentList, ArrayList<char[]> fullFileList) throws IOException {		
 		for (File file: currentList) {
 			if (isJavaFile(file)) 
 				fullFileList.add(file);
@@ -123,10 +123,10 @@ public class TypeFinder extends Parser {
 	 * @return list of length at least zero of all java files found in the jar file
 	 * @throws IOException
 	 */
-	protected ArrayList<File> jarToFile(File file) throws IOException {
+	protected ArrayList<char[]> jarToFile(File file) throws IOException {
 		JarFile jarFile = new JarFile(file);
 		Enumeration<JarEntry> entries = jarFile.entries();
-		ArrayList<File> fileList = new ArrayList<File>();
+		ArrayList<char[]> fileList = new ArrayList<char[]>();
 		JarEntry curentry = null;
 		
 		while (entries.hasMoreElements()){

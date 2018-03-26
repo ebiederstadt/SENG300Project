@@ -149,12 +149,4 @@ public class ParsingTestSuite {
 		int[] dr = tf.getDeclarationsAndReferences("String");
 		assertEquals(1, dr[1]);
 	}
-	
-	@Test
-	public void testParseJarFileInDir() throws IOException {
-		String dir = BASEDIR +  "testFiles\\";
-		TypeFinder tf = new TypeFinder(dir, true);
-		int[] dr = tf.getDeclarationsAndReferences("TestClass");
-		assertEquals(1, dr[0]);
-	}
 }
