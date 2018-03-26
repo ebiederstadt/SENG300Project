@@ -1,11 +1,6 @@
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.NoSuchFileException;
-
-import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.junit.Before;
 import org.junit.Test;
 
